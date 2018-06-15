@@ -37,44 +37,6 @@ public class MainActivity extends AppCompatActivity {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(searchResponseJson).getAsJsonObject();
 
-        JsonObject refinementsObject = parser.parse(filterGroups).getAsJsonObject();
-        List<FilterGroup> filterGroups = gson.fromJson(refinementsObject,new TypeToken<List<FilterGroup>>(){}.getType());
-//        JsonObject refinementObject = jsonObject.get(REFINEMENTS_KEY).getAsJsonObject();
-////        Log.e("darran", "the refinement object member count is: "+refinementObject.keySet().size());
-//        List<FilterGroup> filterGroups = new ArrayList<>();
-//        for (String key : refinementObject.keySet()) {
-////            Log.e("darran", "This key is: "+key);
-//
-//            List<Filter> filters = new ArrayList<>();
-//
-//            JsonObject filterGroupJsobObject = refinementObject.get(key).getAsJsonObject();
-//            JsonObject refinementValues = filterGroupJsobObject.getAsJsonObject(REFINEMENT_VALUES_KEY);
-//            for (String refinementValueKey : refinementValues.keySet()) {
-//                JsonObject refinement = refinementValues.getAsJsonObject(refinementValueKey);
-//
-//                String linkText = refinement.get(LINK_KEY).getAsString() ;
-//                String id = linkText.substring(linkText.lastIndexOf(FILTER_DELIMITER) + 1);
-//
-//                filters.add(Filter.create(
-//                        id,
-//                        key,
-//                        refinement.get(TEXT_KEY).getAsString(),
-//                        linkText));
-//            }
-//
-//
-//            String filterGroupInfoName = refinementObject.get(key).getAsJsonObject().get(FIELD_NAME_KEY).getAsString();
-//
-////            Log.e("darran", "The field name is: " + filterGroupInfoName);
-//
-//            FilterGroupInfo filterGroupInfo = FilterGroupInfo.create(filterGroupInfoName, key);
-//            FilterGroup filterGroup =
-//                    FilterGroup.create(filterGroupInfo, filters);
-//            filterGroups.add(filterGroup);
-//        }
-//
-        Log.e("darran", "The filter group count is: "+filterGroups.size());
-
         SearchResultV2 searchResultV2 = gson.fromJson(jsonObject, SearchResultV2.class);
 
         Log.e("darran", "The search results has this hitCount " + searchResultV2.getHitCount());
