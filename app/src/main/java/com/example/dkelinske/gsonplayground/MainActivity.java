@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.dkelinske.gsonplayground.filters.Filter;
 import com.example.dkelinske.gsonplayground.filters.FilterGroup;
-import com.example.dkelinske.gsonplayground.filters.FilterGroupInfo;
 import com.example.dkelinske.gsonplayground.filters.FilterGroupParser;
 import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2;
 import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2Parser;
@@ -16,7 +14,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {

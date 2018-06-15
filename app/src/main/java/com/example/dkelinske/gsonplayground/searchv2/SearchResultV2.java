@@ -2,7 +2,6 @@ package com.example.dkelinske.gsonplayground.searchv2;
 
 
 import com.example.dkelinske.gsonplayground.filters.FilterGroup;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
