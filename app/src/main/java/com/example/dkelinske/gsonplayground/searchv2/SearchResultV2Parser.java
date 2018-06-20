@@ -2,6 +2,7 @@ package com.example.dkelinske.gsonplayground.searchv2;
 
 import com.example.dkelinske.gsonplayground.filters.FilterGroup;
 import com.example.dkelinske.gsonplayground.filters.FilterGroupListParser;
+import com.example.dkelinske.gsonplayground.filters.FilterGroupListTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -9,8 +10,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultV2Parser implements JsonDeserializer<SearchResultV2> {
@@ -44,9 +49,18 @@ public class SearchResultV2Parser implements JsonDeserializer<SearchResultV2> {
 
         JsonObject searchResultsObject = json.getAsJsonObject();
         JsonElement filterGroupsElement = searchResultsObject.get(REFINEMENTS_KEY);
+        JsonReader jsonReader = new JsonReader(new StringReader(filterGroupsElement.toString()));
+
+        FilterGroupListTypeAdapter filterGroupListTypeAdapter = new FilterGroupListTypeAdapter();
+        List<FilterGroup> filterGroupsList = null;
+        try {
+            filterGroupsList = filterGroupListTypeAdapter.read(jsonReader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         MapViewPort mapViewPort = context.deserialize(searchResultsObject.get(MAP_VIEWPORT_KEY), mapViewportType);
-        List<FilterGroup> filterGroups = filterGroupListParser.deserialize(filterGroupsElement, filterListType, context);
+//        List<FilterGroup> filterGroups = filterGroupListParser.deserialize(filterGroupsElement, filterListType, context);
         List<Hit> hits = context.deserialize(searchResultsObject.get(HITS_KEY), hitsListType);
         List<ABTestInfo> abTestInfos = context.deserialize(searchResultsObject.get(AB_TEST_INFOS_KEY), abTestInfosType);
 
@@ -56,7 +70,7 @@ public class SearchResultV2Parser implements JsonDeserializer<SearchResultV2> {
                 .pageCount(searchResultsObject.get(PAGE_COUNT_KEY).getAsInt())
                 .pageSize(searchResultsObject.get(PAGE_SIZE_KEY).getAsInt())
                 .mapViewport(mapViewPort)
-                .filterGroups(filterGroups)
+                .filterGroups(filterGroupsList)
                 .hits(hits)
                 .abTestInfos(abTestInfos)
                 .regionPathHierarchy(searchResultsObject.get(REGION_PATH_HIERARCHY_KEY).getAsString())
