@@ -36,14 +36,11 @@ public class FilterGroupListTypeAdapter extends TypeAdapter<List<FilterGroup>> {
 
             in.beginObject();
             while (in.hasNext()) {
-                        in.nextName();
-                        String filterGroupInfoName = in.nextString();
-                        in.nextName();
+                if (in.nextName().equals(FIELD_NAME_KEY)) ;
+                {
+                    String filterGroupInfoName = in.nextString();
+                    if (in.nextName().equals(REFINEMENT_VALUES_KEY)) {
                         in.beginObject();
-
-                        while (in.hasNext()) {
-
-                        }
 
 //                    for (Map.Entry<String, JsonElement> refinementEntry : refinementValues.entrySet()) {
 //                        JsonObject refinement = refinementEntry.getValue().getAsJsonObject();
@@ -62,12 +59,16 @@ public class FilterGroupListTypeAdapter extends TypeAdapter<List<FilterGroup>> {
 
 //                    String filterGroupInfoName = filterGroupJsonObject.get(FIELD_NAME_KEY).getAsString();
 
-                    FilterGroupInfo filterGroupInfo = new AutoValue_FilterGroupInfo(filterGroupInfoName, filterGroupId);
-                    FilterGroup filterGroup = new AutoValue_FilterGroup(filterGroupInfo, filters);
+                        FilterGroupInfo filterGroupInfo = new AutoValue_FilterGroupInfo(filterGroupInfoName, filterGroupId);
+                        FilterGroup filterGroup = new AutoValue_FilterGroup(filterGroupInfo, filters);
 
-                    filterGroups.add(filterGroup);
+                        filterGroups.add(filterGroup);
+                        in.endObject();
+                    }
                 }
             }
+            in.endObject();
+        }
 
         return filterGroups;
     }
