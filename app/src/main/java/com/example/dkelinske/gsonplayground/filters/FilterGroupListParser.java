@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FilterGroupParser implements JsonDeserializer<List<FilterGroup>> {
+public class FilterGroupListParser implements JsonDeserializer<List<FilterGroup>> {
 
     private static final String FIELD_NAME_KEY = "fieldName";
-    private static final String REFINEMENTS_KEY = "refinements";
     private static final String REFINEMENT_VALUES_KEY = "refinementValues";
     private static final String LINK_KEY = "link";
     private static final String FILTER_DELIMITER = ":";
@@ -23,24 +22,26 @@ public class FilterGroupParser implements JsonDeserializer<List<FilterGroup>> {
     @Override
     public List<FilterGroup> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        JsonObject jsonObject =  json.getAsJsonObject();
-        JsonObject refinementObject = jsonObject.get(REFINEMENTS_KEY).getAsJsonObject();
         List<FilterGroup> filterGroups = new ArrayList<>();
 
-        for (Map.Entry<String, JsonElement> filterGroupEntry : refinementObject.entrySet()) {
+        JsonObject refinementsObject = json.getAsJsonObject();
+
+        for (Map.Entry<String, JsonElement> filterGroupEntry : refinementsObject.entrySet()) {
             String filterGroupId = filterGroupEntry.getKey();
             List<Filter> filters = new ArrayList<>();
 
             JsonObject filterGroupJsonObject = filterGroupEntry.getValue().getAsJsonObject();
             JsonObject refinementValues = filterGroupJsonObject.getAsJsonObject(REFINEMENT_VALUES_KEY);
 
-            for (Map.Entry<String, JsonElement> refinementEntry: refinementValues.entrySet()) {
+            for (Map.Entry<String, JsonElement> refinementEntry : refinementValues.entrySet()) {
                 JsonObject refinement = refinementEntry.getValue().getAsJsonObject();
 
-                String linkText = refinement.get(LINK_KEY).getAsString() ;
+                String linkText = refinement.get(LINK_KEY).getAsString();
+                // Parse the id for the filter and assign it to a local variable to be used during
+                // filter creation
                 String id = linkText.substring(linkText.lastIndexOf(FILTER_DELIMITER) + 1);
 
-                filters.add(Filter.create(
+                filters.add(new AutoValue_Filter(
                         id,
                         filterGroupId,
                         refinement.get(TEXT_KEY).getAsString(),
@@ -49,8 +50,8 @@ public class FilterGroupParser implements JsonDeserializer<List<FilterGroup>> {
 
             String filterGroupInfoName = filterGroupJsonObject.get(FIELD_NAME_KEY).getAsString();
 
-            FilterGroupInfo filterGroupInfo = FilterGroupInfo.create(filterGroupInfoName, filterGroupId);
-            FilterGroup filterGroup = FilterGroup.create(filterGroupInfo, filters);
+            FilterGroupInfo filterGroupInfo = new AutoValue_FilterGroupInfo(filterGroupInfoName, filterGroupId);
+            FilterGroup filterGroup = new AutoValue_FilterGroup(filterGroupInfo, filters);
 
             filterGroups.add(filterGroup);
         }

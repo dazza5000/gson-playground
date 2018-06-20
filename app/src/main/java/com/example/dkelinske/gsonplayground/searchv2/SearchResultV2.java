@@ -1,131 +1,90 @@
 package com.example.dkelinske.gsonplayground.searchv2;
 
 
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
 import com.example.dkelinske.gsonplayground.filters.FilterGroup;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class SearchResultV2 implements Serializable {
+@AutoValue
+public abstract class SearchResultV2 implements Parcelable {
 
-    private int hitCount;
-    private int page;
-    private int pageSize;
-    private int pageCount;
-    private List<Hit> hits;
-    private List<ABTestInfo> abTestInfos;
-    private SearchRequestV2 searchRequestData;
-    private WebLinkSearchRequest searchRequest;
-    private String regionPathHierarchy;
-    private MapViewPort mapViewport;
-    private List<FilterGroup> filterGroups;
-
-    public SearchResultV2() {
-    }
-
-    public List<ABTestInfo> getAbTestInfos() {
-        return abTestInfos;
-    }
-
-    public void setAbTestInfos(List<ABTestInfo> abTestInfos) {
-        this.abTestInfos = abTestInfos;
-    }
-
-    public int getHitCount() {
-        return hitCount;
-    }
-
-    public void setHitCount(int hitCount) {
-        this.hitCount = hitCount;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(int pageCount) {
-        this.pageCount = pageCount;
-    }
-
-    public List<Hit> getHits() {
-        return hits;
-    }
-
-    public void setHits(List<Hit> hits) {
-        this.hits = hits;
-    }
-
-    public String getRegionPathHierarchy() {
-        return regionPathHierarchy;
-    }
-
-    public void setRegionPathHierarchy(String regionPathHierarchy) {
-        this.regionPathHierarchy = regionPathHierarchy;
-    }
-
-    public SearchRequestV2 getSearchRequestData() {
-        return searchRequestData;
-    }
-
-    public void setSearchRequestData(SearchRequestV2 searchRequestData) {
-        this.searchRequestData = searchRequestData;
-    }
-
-    public MapViewPort getMapViewport() {
-        return mapViewport;
-    }
-
-    public WebLinkSearchRequest getSearchRequest() {
-        return searchRequest;
-    }
-
-    public void setSearchRequest(WebLinkSearchRequest searchRequest) {
-        this.searchRequest = searchRequest;
-    }
-
-    public List<FilterGroup> getFilterGroups() {
-        return filterGroups;
-    }
-
-    public void setFilterGroups(List<FilterGroup> filterGroups) {
-        this.filterGroups = filterGroups;
-    }
+    public abstract int hitCount();
+    public abstract int page();
+    public abstract int pageSize();
+    public abstract int pageCount();
+    @Nullable public abstract List<Hit> hits();
+    @Nullable public abstract MapViewPort mapViewport();
+    @Nullable public abstract List<FilterGroup> filterGroups();
+    @Nullable public abstract List<ABTestInfo> abTestInfos();
+    @Nullable public abstract String regionPathHierarchy();
+    @Nullable public abstract SearchRequestV2 searchRequestData();
+    @Nullable public abstract WebLinkSearchRequest searchRequest();
 
     // latitude and longitude
     // https://wiki.homeawaycorp.com/display/arch/ADL+Spec+-+Component-Specific+Fields+-+Search+-+v1.6.0
     public Double getLatitudeCenter() {
-        if (mapViewport.getNortheast() != null
-                && mapViewport.getNortheast().getLatitude() != null
-                && mapViewport.getSouthwest() != null
-                && mapViewport.getSouthwest().getLatitude() != null) {
-            return (mapViewport.getNortheast().getLatitude() + mapViewport.getSouthwest().getLatitude()) / 2;
+        if (mapViewport().getNortheast() != null
+                && mapViewport().getNortheast().getLatitude() != null
+                && mapViewport().getSouthwest() != null
+                && mapViewport().getSouthwest().getLatitude() != null) {
+            return (mapViewport().getNortheast().getLatitude() + mapViewport().getSouthwest().getLatitude()) / 2;
         }
         return null;
     }
 
     public Double getLongitudeCenter() {
-        if (mapViewport.getNortheast() != null
-                && mapViewport.getNortheast().getLongitude() != null
-                && mapViewport.getSouthwest() != null
-                && mapViewport.getSouthwest().getLongitude() != null) {
-            return (mapViewport.getNortheast().getLongitude() + mapViewport.getSouthwest().getLongitude()) / 2;
+        if (mapViewport().getNortheast() != null
+                && mapViewport().getNortheast().getLongitude() != null
+                && mapViewport().getSouthwest() != null
+                && mapViewport().getSouthwest().getLongitude() != null) {
+            return (mapViewport().getNortheast().getLongitude() + mapViewport().getSouthwest().getLongitude()) / 2;
         }
         return null;
+    }
+
+    public static TypeAdapter<SearchResultV2> typeAdapter(Gson gson) {
+        return new AutoValue_SearchResultV2.GsonTypeAdapter(gson);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SearchResultV2.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder hitCount(int hitCount);
+
+        public abstract Builder page(int page);
+
+        public abstract Builder pageSize(int pageSize);
+
+        public abstract Builder pageCount(int pageCount);
+
+        public abstract Builder hits(List<Hit> hits);
+
+        public abstract Builder abTestInfos(List<ABTestInfo> abTestInfos);
+
+        public abstract Builder searchRequestData(SearchRequestV2 searchRequestData);
+
+        public abstract Builder searchRequest(WebLinkSearchRequest searchRequest);
+
+        public abstract Builder regionPathHierarchy(String regionPathHierarchy);
+
+        public abstract Builder mapViewport(MapViewPort mapViewport);
+
+        public abstract Builder filterGroups(List<FilterGroup> filterGroups);
+
+        public abstract SearchResultV2 build();
+
     }
 }

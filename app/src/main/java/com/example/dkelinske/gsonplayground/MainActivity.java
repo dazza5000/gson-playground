@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.dkelinske.gsonplayground.filters.FilterGroup;
-import com.example.dkelinske.gsonplayground.filters.FilterGroupParser;
+import com.example.dkelinske.gsonplayground.filters.FilterGroupListParser;
 import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2;
 import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2Parser;
 import com.google.gson.Gson;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(new TypeToken<List<FilterGroup>>(){}.getType(), new FilterGroupParser())
+                .registerTypeAdapter(new TypeToken<List<FilterGroup>>(){}.getType(), new FilterGroupListParser())
                 .registerTypeAdapter(SearchResultV2.class, new SearchResultV2Parser())
                 .create();
         JsonParser parser = new JsonParser();
@@ -36,6 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         SearchResultV2 searchResultV2 = gson.fromJson(jsonObject, SearchResultV2.class);
 
-        Log.e("darran", "The search results has this hitCount " + searchResultV2.getHitCount());
+        Log.e("darran", "The search results has this hitCount " + searchResultV2.hitCount());
     }
 }
