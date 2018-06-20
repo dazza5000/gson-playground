@@ -4,17 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.dkelinske.gsonplayground.filters.FilterGroup;
-import com.example.dkelinske.gsonplayground.filters.FilterGroupListParser;
+import com.example.dkelinske.gsonplayground.filters.FilterTypeAdapterFactory;
+import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2TypeAdapterFactory;
 import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2;
-import com.example.dkelinske.gsonplayground.searchv2.SearchResultV2Parser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(new TypeToken<List<FilterGroup>>(){}.getType(), new FilterGroupListParser())
-                .registerTypeAdapter(SearchResultV2.class, new SearchResultV2Parser())
+                .registerTypeAdapterFactory(FilterTypeAdapterFactory.create())
+                .registerTypeAdapterFactory(new SearchResultV2TypeAdapterFactory())
                 .create();
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(searchResponseJson).getAsJsonObject();
